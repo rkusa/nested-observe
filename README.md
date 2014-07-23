@@ -1,6 +1,6 @@
 # nested-observe
 
-Nested `Object.observe()`.
+`Object.observe()` for nested objects.
 
 [![NPM][npm]](https://npmjs.org/package/nested-observe)
 [![Dependency Status][dependencies]](https://david-dm.org/rkusa/nested-observe)
