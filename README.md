@@ -7,14 +7,23 @@
 [![Coverage][coveralls]](https://coveralls.io/r/rkusa/nested-observe)
 [![Build Status][travis]](http://travis-ci.org/rkusa/nested-observe)
 
-### Api
+## Compatability
+
+`nested-observe` internally uses `WeakMap` (for garbage collection). Node.js supports both `WeakMap` and `Object.observe` since version `0.11.13`. For browsers have a look at: [kangax's compaitibility table](http://kangax.github.io/compat-table/es7/#Object.observe). For unsupported browsers/Node.js, you can use shims, e.g. [KapIT/observe-shim](https://github.com/KapIT/observe-shim) and [Benvie/WeakMap](https://github.com/Benvie/WeakMap).
+
+## Api
 
 ```js
 var Nested = require('nested-observe')
-Nested.observe(obj, callback, accept)
-Nested.unobserve(obj, callback)
+Nested.observe(root, callback, accept)
+Nested.unobserve(root, callback)
 Nested.deliverChangeRecords(callback)
 ```
+
+Delivered change records contain two additional properties:
+
+- **root** - the root of the nested structure
+- **path** - a [JSON Pointer](http://tools.ietf.org/html/rfc6901) (absolute from the root) to the changed property
 
 ## MIT License
 
