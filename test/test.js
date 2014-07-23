@@ -320,5 +320,11 @@ describe('Nested', function() {
     it('should not throw for unobserved callback', function() {
       Nested.deliverChangeRecords(console.log)
     })
+
+    it('should throw when called with a non-function', function() {
+      expect(function() {
+        Nested.deliverChangeRecords()
+      }).to.throw('Callback must be a function, given: undefined')
+    })
   })
 })
