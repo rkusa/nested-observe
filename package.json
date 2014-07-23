@@ -1,0 +1,36 @@
+{
+  "name": "nested-observe",
+  "version": "0.1.0",
+  "author": "Markus Ast <npm.m@rkusa.st>",
+  "description": "Nested Object.observe()",
+  "keywords": ["observe", "es6", "harmony"],
+  "main": "lib/",
+  "dependencies": {
+    "json-pointer": "^0.1.0"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "eslint": "^0.7.3",
+    "gulp": "^3.8.5",
+    "gulp-coveralls": "^0.1.2",
+    "gulp-eslint": "^0.1.7",
+    "gulp-istanbul": "^0.2.0",
+    "gulp-mocha": "^0.5.0"
+  },
+  "scripts": {
+    "test": "gulp",
+    "coveralls": "gulp coveralls"
+  },
+  "bugs": {
+    "url": "https://github.com/rkusa/nested-observe/issues"
+  },
+  "homepage": "https://github.com/rkusa/nested-observe",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:rkusa/nested-observe.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.11.13"
+  }
+}

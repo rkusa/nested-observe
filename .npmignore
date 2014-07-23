@@ -1,0 +1,10 @@
+/test
+.DS_Store
+.gitignore
+.npmignore
+.nvmrc
+.eslintrc
+.travis.yml
+.coveralls.yml
+*.sublime-project
+*.sublime-workspace
