@@ -2,6 +2,7 @@
 
 var expect = require('chai').expect
 var Nested = require('../')
+Nested.debug = true
 
 var records
 function observer(recs) {
@@ -18,7 +19,6 @@ function assertChangesAre(expectation) {
     expectation = [expectation]
   }
   Nested.deliverChangeRecords(observer)
-  // console.log('records', records)
   expect(records).to.eql(expectation)
   records = undefined
 }
@@ -81,7 +81,6 @@ describe('Flat', function() {
 
     it('should work for `setPrototype`')
     it('should work for `preventExtensions`')
-
   })
 
   describe('.observe({Array))', function() {
@@ -248,7 +247,7 @@ describe('Nested', function() {
       })
     })
 
-    it.skip('should properly recognize objects that occure multiple times (2)', function() {
+    it('should properly recognize objects that occure multiple times (2)', function() {
       var deep = { deeper: {} }
       obj.first = deep
       obj.second = { deep: deep }
@@ -260,7 +259,78 @@ describe('Nested', function() {
       deep.deeper.foo = 'bar'
       assertChangesAre({
         object: deep.deeper, type: 'add', name: 'foo',
-        path: '/second/deep/deeper/foo', root: obj
+        path: '/first/deeper/foo', root: obj
+      })
+    })
+
+    it('should properly recognize objects that occure multiple times (3)', function() {
+      var first = obj
+      first.name = 'first'
+
+      var second = {}
+      second.name = 'second'
+      Nested.observe(second, observer)
+
+      var deep = { deeper: {} }
+      first.deep = deep
+      second.deep = deep
+      clearChanges()
+
+      deep.deeper.foo = 'bar'
+      assertChangesAre([
+        {
+          object: deep.deeper, type: 'add', name: 'foo',
+          path: '/deep/deeper/foo', root: first
+        },
+        {
+          object: deep.deeper, type: 'add', name: 'foo',
+          path: '/deep/deeper/foo', root: second
+        }
+      ])
+    })
+
+    it('should properly cleanup objects that occured multiple times', function() {
+      var deep = { deeper: {} }
+      obj.first = deep
+      obj.second = { deep: deep }
+      clearChanges()
+
+      delete obj.first
+      delete obj.second
+      clearChanges()
+
+      deep.deeper.foo = 'bar'
+      assertChangesAre(undefined)
+    })
+
+    it('should ignore circular references (1)', function() {
+      var deep = { deeper: {} }
+      obj.deep = deep
+      deep.deeper.deep = deep
+      clearChanges()
+
+      deep.deeper.foo = 'bar'
+      assertChangesAre({
+        object: deep.deeper, type: 'add', name: 'foo',
+        path: '/deep/deeper/foo', root: obj
+      })
+    })
+
+    it('should ignore circular references (2)', function() {
+      var deep = { deeper: {} }
+      obj.deep = deep
+      clearChanges()
+
+      deep.deeper.deep = deep
+      assertChangesAre({
+        object: deep.deeper, type: 'add', name: 'deep',
+        path: '/deep/deeper/deep', root: obj
+      })
+
+      deep.deeper.foo = 'bar'
+      assertChangesAre({
+        object: deep.deeper, type: 'add', name: 'foo',
+        path: '/deep/deeper/foo', root: obj
       })
     })
 
@@ -325,6 +395,59 @@ describe('Nested', function() {
       expect(function() {
         Nested.deliverChangeRecords()
       }).to.throw('Callback must be a function, given: undefined')
+    })
+  })
+
+  describe('debug', function() {
+    var error = console.error
+    after(function() {
+      console.error = error
+    })
+
+    it('should log if enabled', function(done) {
+      var test = {}
+      var observer = function() {
+        Object.undefined.is.not.a.function
+      }
+
+      Nested.observe(test, observer)
+
+      var called = false
+      console.error = function() {
+        called = true
+      }
+      test.foo = 'bar'
+      clearChanges()
+
+      setImmediate(function() {
+        expect(called).to.be.true
+        Nested.unobserve(test, observer)
+        done()
+      })
+    })
+
+    it('should be silent if disabled', function(done) {
+      var test = {}
+      var observer = function() {
+        Object.undefined.is.not.a.function
+      }
+
+      Nested.observe(test, observer)
+      Nested.debug = false
+
+      var called = false
+      console.error = function() {
+        called = true
+      }
+      test.foo = 'bar'
+      clearChanges()
+
+      setImmediate(function() {
+        expect(called).to.be.false
+        Nested.unobserve(test, observer)
+        Nested.debug = true
+        done()
+      })
     })
   })
 })
