@@ -25,6 +25,10 @@ Delivered change records contain two additional properties:
 - **root** - the root of the nested structure
 - **path** - a [JSON Pointer](http://tools.ietf.org/html/rfc6901) (absolute from the root) to the changed property
 
+### Debugging
+
+By default, `Object.observe` ignores errors occuring during change record delivery. To simplify debugging, you can set `Nested.debug = true`, which will log such errors to the console.
+
 ## MIT License
 
 Copyright (c) 2014 Markus Ast
