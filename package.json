@@ -1,6 +1,6 @@
 {
   "name": "nested-observe",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "Markus Ast <npm.m@rkusa.st>",
   "description": "Object.observe() for nested objects.",
   "keywords": ["observe", "es6", "harmony"],
