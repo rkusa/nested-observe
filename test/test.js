@@ -83,12 +83,12 @@ describe('Flat', function() {
     it('should work for `preventExtensions`')
   })
 
-  describe('.observe({Array))', function() {
+  describe('.observe({Array})', function() {
     it('should work for .push()', function() {
       arr.push(1)
       assertChangesAre({
         object: arr, type: 'splice', index: 0, removed: [], addedCount: 1,
-        root: arr, path: '/0'
+        root: arr, path: '/'
       })
     })
 
@@ -99,7 +99,7 @@ describe('Flat', function() {
       arr.splice(2, 2)
       assertChangesAre({
         object: arr, type: 'splice', index: 2, removed: [3, 4], addedCount: 0,
-        root: arr, path: '/2'
+        root: arr, path: '/'
       })
     })
 
@@ -110,7 +110,7 @@ describe('Flat', function() {
       arr[4] = 5
       assertChangesAre({
         object: arr, type: 'splice', index: 2, removed: [], addedCount: 3,
-        root: arr, path: '/2'
+        root: arr, path: '/'
       })
     })
 
@@ -121,7 +121,7 @@ describe('Flat', function() {
       arr.length = 0
       assertChangesAre({
         object: arr, type: 'splice', index: 0, removed: [1, 2], addedCount: 0,
-        root: arr, path: '/0'
+        root: arr, path: '/'
       })
     })
   })
@@ -342,7 +342,7 @@ describe('Nested', function() {
       obj.arr.push({ deep: deep })
       assertChangesAre({
         object: obj.arr, type: 'splice', index: 0, removed: [], addedCount: 1,
-        root: obj, path: '/arr/0'
+        root: obj, path: '/arr'
       })
 
       deep.deeper.foo = 'bar'
