@@ -3,11 +3,12 @@
   "version": "0.2.0",
   "author": "Markus Ast <npm.m@rkusa.st>",
   "description": "Object.observe() for nested objects.",
-  "keywords": ["observe", "es6", "harmony"],
+  "keywords": [
+    "observe",
+    "es6",
+    "harmony"
+  ],
   "main": "lib/",
-  "dependencies": {
-    "json-pointer": "^0.1.0"
-  },
   "devDependencies": {
     "chai": "^1.9.1",
     "eslint": "^0.7.3",

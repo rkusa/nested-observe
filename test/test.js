@@ -364,6 +364,24 @@ describe('Nested', function() {
       deep.deeper.foo = 'bar'
       assertChangesAre(undefined)
     })
+
+    it('should properly recognize array index shifts', function() {
+      obj.arr = []
+      clearChanges()
+
+      var foobar = {}
+      obj.arr.push(foobar)
+      clearChanges()
+
+      obj.arr.unshift({})
+      clearChanges()
+
+      foobar.foo = ''
+      assertChangesAre({
+        object: foobar, type: 'add', name: 'foo',
+        path: '/arr/1/foo', root: obj
+      })
+    })
   })
 
   describe('.unobserve()', function() {
