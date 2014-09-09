@@ -14,7 +14,7 @@
 ## Api
 
 ```js
-var Nested = require('nested-observe')
+var Nested = require('nested-observe') // window.Nested when using browser bundle
 Nested.observe(root, callback, accept)
 Nested.unobserve(root, callback)
 Nested.deliverChangeRecords(callback)
