@@ -2,10 +2,37 @@
 
 var gulp = require('gulp')
 
-gulp.task('default', ['lint', 'test'])
+gulp.task('default', ['test'])
+
+var transpiler = require('es6-module-transpiler')
+var Container = transpiler.Container
+var FileResolver = transpiler.FileResolver
+
+var CommonJSFormatter = transpiler.formatters.commonjs
+gulp.task('build', function() {
+  var container = new Container({
+    resolvers: [new FileResolver(['src/'])],
+    formatter: new CommonJSFormatter()
+  })
+
+  container.getModule('index.js')
+  container.getModule('utils.js')
+  container.write('lib/')
+})
+
+var BundleFormatter = transpiler.formatters.bundle
+gulp.task('bundle', function() {
+  var container = new Container({
+    resolvers: [new FileResolver(['src/'])],
+    formatter: new BundleFormatter()
+  })
+
+  container.getModule('browser.js')
+  container.write('dist/nested-observe.js')
+})
 
 var mocha = require('gulp-mocha')
-gulp.task('test', function() {
+gulp.task('test', ['build'], function() {
   return gulp.src(['!test/coverage/**', 'test/**/*.js'], { read: false })
              .pipe(mocha({
                reporter: 'spec'
@@ -14,7 +41,7 @@ gulp.task('test', function() {
 
 var eslint = require('gulp-eslint')
 gulp.task('lint', function() {
-  return gulp.src(['lib/**/*.js', '!test/coverage/**', 'test/**/*.js', 'gulpfile.js'])
+  return gulp.src(['src/**/*.js', '!test/coverage/**', 'test/**/*.js', 'gulpfile.js'])
              .pipe(eslint())
              .pipe(eslint.format())
              .pipe(eslint.failOnError())

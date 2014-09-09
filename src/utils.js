@@ -1,6 +1,6 @@
 // WeakMultiValueMap
 
-var WeakMVMap = exports.WeakMVMap = function() {
+export var WeakMVMap = function() {
   this.map = new WeakMap
 }
 
@@ -38,7 +38,7 @@ WeakMVMap.prototype.remove = function(key, value) {
 
 // ParentsMapping
 
-var ParentsMapping = exports.ParentsMapping = function() {
+export var ParentsMapping = function() {
   this.mapping = new WeakMap
 }
 

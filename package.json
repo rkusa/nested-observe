@@ -1,6 +1,6 @@
 {
   "name": "nested-observe",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Markus Ast <npm.m@rkusa.st>",
   "description": "Object.observe() for nested objects.",
   "keywords": [
@@ -8,9 +8,10 @@
     "es6",
     "harmony"
   ],
-  "main": "lib/",
+  "main": "index.js",
   "devDependencies": {
     "chai": "^1.9.1",
+    "es6-module-transpiler": "^0.6.2",
     "eslint": "^0.7.3",
     "gulp": "^3.8.5",
     "gulp-coveralls": "^0.1.2",
@@ -20,7 +21,8 @@
   },
   "scripts": {
     "test": "gulp",
-    "coveralls": "gulp coveralls"
+    "coveralls": "gulp coveralls",
+    "prepublish": "gulp build"
   },
   "bugs": {
     "url": "https://github.com/rkusa/nested-observe/issues"

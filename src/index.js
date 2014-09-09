@@ -1,6 +1,7 @@
-'use strict'
+import { WeakMVMap, ParentsMapping } from './utils'
 
-var utils = require('./utils')
+// whether to log exceptions thrown during change record delivery
+var debug = false
 
 // This weak map is used for `.deliverChangeRecords(callback)` calls, where the
 // provided callback has to mapped to its corresponding delegate.
@@ -12,7 +13,7 @@ var delegates = new WeakMap // <callback, delegate>
 // them to the actual `callback`.
 var Delegate = function(callback) {
   this.callback  = callback
-  this.observers = new utils.WeakMVMap
+  this.observers = new WeakMVMap
 
   var self = this
   this.handleChangeRecords = function(records) {
@@ -21,7 +22,7 @@ var Delegate = function(callback) {
       changes = Array.prototype.concat.apply([], changes) // flatten
       self.callback(changes)
     } catch (err) {
-      if (exports.debug) console.error(err.stack)
+      if (debug) console.error(err.stack)
     }
   }
 }
@@ -45,7 +46,7 @@ var Observer = function(root, delegate, accept) {
   this.delegate = delegate
   this.callback = delegate.handleChangeRecords
   this.accept   = accept
-  this.parents  = new utils.ParentsMapping
+  this.parents  = new ParentsMapping
 }
 
 // Recursively observe an object and its nested objects.
@@ -167,52 +168,59 @@ Observer.prototype.transform = function(change) {
   return record
 }
 
-// Corresponds to `Object.observe()` but for nested objects.
-exports.observe = function(obj, callback, accept) {
-  var delegate
+export default {
+  // Corresponds to `Object.observe()` but for nested objects.
+  observe: function observe(obj, callback, accept) {
+    var delegate
 
-  if (!delegates.has(callback)) {
-    delegate = new Delegate(callback)
-    delegates.set(callback, delegate)
-  } else {
-    delegate = delegates.get(callback)
+    if (!delegates.has(callback)) {
+      delegate = new Delegate(callback)
+      delegates.set(callback, delegate)
+    } else {
+      delegate = delegates.get(callback)
+    }
+
+    var observers = delegate.observers
+    if (observers.has(obj)) {
+      return
+    }
+
+    var observer = new Observer(obj, delegate, accept)
+    observer.observe(obj)
+  },
+
+  // Corresponds to `Object.unobserve()` but for nested objects.
+  unobserve: function unobserve(obj, callback) {
+    if (!delegates.has(callback)) return
+    var delegate = delegates.get(callback)
+
+    if (!delegate.observers.has(obj)) {
+      return
+    }
+
+    var observers = delegate.observers.get(obj)
+    observers.forEach(function(observer) {
+      observer.unobserve()
+    })
+  },
+
+  // Corresponds to `Object.deliverChangeRecords()` but for nested objects.
+  deliverChangeRecords: function deliverChangeRecords(callback) {
+    if (typeof callback !== 'function') {
+      throw new TypeError('Callback must be a function, given: ' + callback)
+    }
+
+    if (!delegates.has(callback)) return
+
+    var delegate = delegates.get(callback)
+    Object.deliverChangeRecords(delegate.handleChangeRecords)
+  },
+
+  get debug() {
+    return debug
+  },
+
+  set debug(val) {
+    debug = val
   }
-
-  var observers = delegate.observers
-  if (observers.has(obj)) {
-    return
-  }
-
-  var observer = new Observer(obj, delegate, accept)
-  observer.observe(obj)
 }
-
-// Corresponds to `Object.unobserve()` but for nested objects.
-exports.unobserve = function(obj, callback) {
-  if (!delegates.has(callback)) return
-  var delegate = delegates.get(callback)
-
-  if (!delegate.observers.has(obj)) {
-    return
-  }
-
-  var observers = delegate.observers.get(obj)
-  observers.forEach(function(observer) {
-    observer.unobserve()
-  })
-}
-
-// Corresponds to `Object.deliverChangeRecords()` but for nested objects.
-exports.deliverChangeRecords = function(callback) {
-  if (typeof callback !== 'function') {
-    throw new TypeError('Callback must be a function, given: ' + callback)
-  }
-
-  if (!delegates.has(callback)) return
-
-  var delegate = delegates.get(callback)
-  Object.deliverChangeRecords(delegate.handleChangeRecords)
-}
-
-// whether to log exceptions thrown during change record delivery
-exports.debug = false
