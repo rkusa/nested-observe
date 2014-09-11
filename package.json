@@ -1,6 +1,6 @@
 {
   "name": "nested-observe",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Markus Ast <npm.m@rkusa.st>",
   "description": "Object.observe() for nested objects.",
   "keywords": [
@@ -11,13 +11,14 @@
   "main": "index.js",
   "devDependencies": {
     "chai": "^1.9.1",
-    "es6-module-transpiler": "^0.6.2",
     "eslint": "^0.7.3",
     "gulp": "^3.8.5",
     "gulp-coveralls": "^0.1.2",
+    "gulp-es6-module-transpiler": "rkusa/gulp-es6-module-transpiler",
     "gulp-eslint": "^0.1.7",
     "gulp-istanbul": "^0.2.0",
-    "gulp-mocha": "^0.5.0"
+    "gulp-mocha": "^0.5.0",
+    "gulp-sourcemaps": "^1.1.5"
   },
   "scripts": {
     "test": "gulp",

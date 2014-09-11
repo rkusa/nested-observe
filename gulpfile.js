@@ -4,31 +4,27 @@ var gulp = require('gulp')
 
 gulp.task('default', ['test'])
 
-var transpiler = require('es6-module-transpiler')
-var Container = transpiler.Container
-var FileResolver = transpiler.FileResolver
+var transpile  = require('gulp-es6-module-transpiler')
+var sourcemaps = require('gulp-sourcemaps')
 
-var CommonJSFormatter = transpiler.formatters.commonjs
 gulp.task('build', function() {
-  var container = new Container({
-    resolvers: [new FileResolver(['src/'])],
-    formatter: new CommonJSFormatter()
-  })
-
-  container.getModule('index.js')
-  container.getModule('utils.js')
-  container.write('lib/')
+  return gulp.src(['!src/browser.js', 'src/**/*.js'])
+    .pipe(transpile({
+      formatter: new transpile.formatters.commonjs
+    }))
+    .pipe(gulp.dest('lib'))
 })
 
-var BundleFormatter = transpiler.formatters.bundle
+// var BundleFormatter = transpiler.formatters.bundle
 gulp.task('bundle', function() {
-  var container = new Container({
-    resolvers: [new FileResolver(['src/'])],
-    formatter: new BundleFormatter()
-  })
-
-  container.getModule('browser.js')
-  container.write('dist/nested-observe.js')
+  return gulp.src('src/**/*.js')
+    .pipe(sourcemaps.init())
+      .pipe(transpile({
+        bundleName: 'nested-observe',
+        formatter: new transpile.formatters.bundle
+      }))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest('dist'))
 })
 
 var mocha = require('gulp-mocha')
