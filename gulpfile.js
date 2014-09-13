@@ -7,7 +7,7 @@ gulp.task('default', ['test'])
 var transpile  = require('gulp-es6-module-transpiler')
 var sourcemaps = require('gulp-sourcemaps')
 
-gulp.task('build', function() {
+gulp.task('build', ['bundle'], function() {
   return gulp.src(['!src/browser.js', 'src/**/*.js'])
     .pipe(transpile({
       formatter: new transpile.formatters.commonjs

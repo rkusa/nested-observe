@@ -1,6 +1,6 @@
 {
   "name": "nested-observe",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "Markus Ast <npm.m@rkusa.st>",
   "description": "Object.observe() for nested objects.",
   "keywords": [
