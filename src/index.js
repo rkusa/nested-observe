@@ -51,9 +51,13 @@ var Observer = function(root, delegate, accept) {
 
 // Recursively observe an object and its nested objects.
 Observer.prototype.observe = function(obj, parent, key, visited) {
-  if (!obj) return
+  if (!obj || typeof obj !== 'object') {
+    return
+  }
 
-  if (!visited) visited = new WeakMap
+  if (!visited) {
+    visited = new WeakMap
+  }
 
   if (visited.has(obj)) {
     return
@@ -80,6 +84,19 @@ Observer.prototype.observe = function(obj, parent, key, visited) {
   for (var prop in obj) {
     if (typeof obj[prop] === 'object') {
       this.observe(obj[prop], obj, isArray ? Array : prop, visited)
+    }
+  }
+
+  if (typeof obj.entries === 'function') {
+    var entries = obj.entries()
+    if (typeof entries.next === 'function') {
+      // for (var pair of entries)
+      var pair
+      while ((pair = entries.next()).done === false) {
+        if (typeof pair.value[1] === 'object') {
+          this.observe(pair.value[1], obj, pair.value[0], visited)
+        }
+      }
     }
   }
 }
@@ -155,7 +172,11 @@ Observer.prototype.transform = function(change) {
   }
 
   if (change.name) {
-    handleChange(change.object[change.name], change.object, change.name)
+    if (change.name in change.object) {
+      handleChange(change.object[change.name], change.object, change.name)
+    } else if (typeof change.object.get === 'function') {
+      handleChange(change.object.get(change.name), change.object, change.name)
+    }
   } else if (change.type === 'splice' && change.addedCount) {
     var added = change.object.slice(change.index, change.index + change.addedCount)
     added.forEach(function(value) {
