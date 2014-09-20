@@ -103,7 +103,8 @@ Observer.prototype.observe = function(obj, parent, key, visited) {
 
 // Recursively unobserve an object and its nested objects.
 Observer.prototype.unobserve = function(obj, parent, key) {
-  if (!obj) obj = this.root
+  if (obj === undefined) obj = this.root
+  else if (!obj) return
 
   if (!this.delegate.observers.has(obj, this)) {
     return
