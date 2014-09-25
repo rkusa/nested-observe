@@ -1,3 +1,16 @@
+## **1.2.0**
+
+- Add support for iteratable maps
+- fix to not try to unobserve `null` objects
+
+## **1.1.2**
+
+Fix NPM release
+
+## **1.1.1**
+
+Cleanup Sourcemaps
+
 ## **1.1.0**
 
 Add browser bundle.
