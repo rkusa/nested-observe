@@ -4,7 +4,7 @@ var gulp = require('gulp')
 
 gulp.task('default', ['test'])
 
-var transpile  = require('gulp-es6-module-transpiler')
+var transpile  = require('gulp-es6mt')
 var sourcemaps = require('gulp-sourcemaps')
 
 gulp.task('build', ['bundle'], function() {
