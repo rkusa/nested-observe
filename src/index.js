@@ -30,6 +30,10 @@ var Delegate = function(callback) {
 // This method transforms the received change record with using the
 // corresponding observer for the object that got changed.
 Delegate.prototype.transform = function(record) {
+  if (!this.observers.has(record.object)) {
+    return []
+  }
+
   var observers = this.observers.get(record.object)
   observers = observers.filter(function(value, index, self) {
     return self.indexOf(value) === index

@@ -14,7 +14,7 @@
     "eslint": "^0.7.3",
     "gulp": "^3.8.5",
     "gulp-coveralls": "^0.1.2",
-    "gulp-es6-module-transpiler": "rkusa/gulp-es6-module-transpiler",
+    "gulp-es6mt": "^1.0.0",
     "gulp-eslint": "^0.1.7",
     "gulp-istanbul": "^0.2.0",
     "gulp-mocha": "^0.5.0",
